@@ -23,57 +23,54 @@ class User
 		@@menu.each do  |key, value| 
 			if key==item 
 				@present = 1
+				return "Item Available"
+				break
 			end
 		end
-		if (@present ==1)
-			puts "Item Available"
-		else
-			puts "Item Unavilable"
-		end
-
+			return "Item Unavailable"
 	end
 	
-	def order
-	  @item = []     #ordered items
-		@pamount = 0   #amount to be paid
-		@tquantity = 0 #total quantity
-		@titem = 0     #total item
-		puts "\nMenu of food"
-		puts "1. Chicken Roll $50"
-		puts "2. Egg Roll $40"
-		puts "3. Hamburger $60 "
-		puts "\nEnter the number of item to be ordered"
-		x = gets.to_i
-		while x>0
+ def order
+    @array_of_item= []    #ordered items
+    @amount_to_pay = 0    #amount to be paid
+    @total_quantity = 0   #total quantity
+    @size_of_item_array = @@menu.length  #length of array of items
+    puts "\nMenu of food"
+    count = 1
+    @@menu.each do |key, value|
+      puts "#{count}. #{key} #{value}"
+      count+=1
+    end
+    puts "\nEnter the number of item to be ordered"
+    no_of_item = gets.to_i     #number of item
+    while no_of_item>0
 			puts "\nEnter food name"
-			i = gets.chomp
+			food_name = gets.chomp
+			while (check_availability(food_name)=="Item Unavailable")
+				puts "Item Unavailable please enter another item"
+				food_name = gets.chomp
+			end
 			puts "It's quantity"
-			q = gets.to_i
-			@item.push(i)
-			@titem += 1
-			@tquantity += q
-			@pamount += q * @@menu[i]
-			x = x - 1
+			quantity = gets.to_i
+			@array_of_item.push(food_name)
+			@total_quantity += quantity
+			@amount_to_pay += quantity * @@menu[food_name]
+			no_of_item = no_of_item - 1
 		end
-		if @tquantity>0
+		if @total_quantity>0
 			@@status = "Order Confirmed"
 		end	
-		puts "\nOrder Summary"
-		puts "You have ordered "
-		puts @item
-		puts "Total amount to be paid "
-		puts @pamount	
+		puts "\nOrder Summary \nYou have ordered ", @array_of_item,
+		"Total amount to be paid #{@amount_to_pay}"	
 	end
 	
 	def view_order_status
-		puts "Order status " 
-		puts @@status
+		puts "Order status #{@@status}"
 	end
 
 	def change_order_status (status)
 		@@status = status
-		puts "Order status changed to " 
-		puts @@status
+		puts "Order status changed to #{@@status}"
 	end
 
 end
@@ -89,114 +86,19 @@ puts "\nEnter your choice
 5. Exit "
 choice = gets.to_i
 	if choice==1
-		o1 = User.new() #object created
-		o1.order        
+		User.new.order 
 	elsif choice==2
 		puts "\nEnter the item whose availability you want to check"
 		item = gets.chomp	  	
-		o1 = User.new()
-		o1.check_availability (item)
+		puts User.new.check_availability (item)
 	elsif choice==3
-		o1 = User.new()
-		o1.view_order_status
+		User.new.view_order_status
 	elsif choice==4
-	    	puts "Enter the new status"
+	  puts "Enter the new status"
 		status = gets.chomp	  	
-		o1 = User.new()
-		o1.change_order_status (status)
+		User.new.change_order_status(status)
 	elsif choice==5
   		break
 	end
 end
 
-=begin 
-akansha@akansha-Latitude-E5440:~$ ruby food_ordering_portal.rb
-
-Enter your choice
-1. Order Food
-2. Check Availability
-3. View Order Status 
-4. Change Order Status
-5. Exit 
-1
-
-Menu of food
-1. Chicken Roll $50
-2. Egg Roll $40
-3. Hamburger $60 
-
-Enter the number of item to be ordered
-2
-
-Enter food name
-Chicken Roll
-It's quantity
-2
-
-Enter food name
-Egg Roll
-It's quantity
-1
-
-Order Summary
-You have ordered 
-Chicken Roll
-Egg Roll
-Total amount to be paid 
-140
-
-Enter your choice
-1. Order Food
-2. Check Availability
-3. View Order Status 
-4. Change Order Status
-5. Exit 
-2
-
-Enter the item whose availability you want to check
-Egg Roll
-Item Available
-
-Enter your choice
-1. Order Food
-2. Check Availability
-3. View Order Status 
-4. Change Order Status
-5. Exit 
-2
-
-Enter the item whose availability you want to check
-Pizza
-Item Unavilable
-
-Enter your choice
-1. Order Food
-2. Check Availability
-3. View Order Status 
-4. Change Order Status
-5. Exit 
-3
-Order status 
-Order Confirmed
-
-Enter your choice
-1. Order Food
-2. Check Availability
-3. View Order Status 
-4. Change Order Status
-5. Exit 
-4   
-Enter the new status
-Order Delivered
-Order status changed to 
-Order Delivered
-
-Enter your choice
-1. Order Food
-2. Check Availability
-3. View Order Status 
-4. Change Order Status
-5. Exit 
-5
-akansha@akansha-Latitude-E5440:~$ 
-=end
